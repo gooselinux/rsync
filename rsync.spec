@@ -7,7 +7,7 @@
 Summary: A program for synchronizing files over a network
 Name: rsync
 Version: 3.0.6
-Release: 5%{?prerelease}%{?dist}
+Release: 5%{?prerelease}%{?dist}.1
 Group: Applications/Internet
 URL: http://rsync.samba.org/
 
@@ -15,6 +15,7 @@ Source0: ftp://rsync.samba.org/pub/rsync/rsync-%{version}%{?prerelease}.tar.gz
 Source1: ftp://rsync.samba.org/pub/rsync/rsync-patches-%{version}%{?prerelease}.tar.gz
 Source2: rsync.xinetd
 Patch0: rsync-3.0.6-permissions.patch
+Patch1: rsync-3.0.6-CVE-2011-1097.patch
 BuildRequires: libacl-devel, libattr-devel, autoconf, popt-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 License: GPLv3+
@@ -49,6 +50,7 @@ patch -p1 -i patches/xattrs.diff
 patch -p1 -i patches/copy-devices.diff
 
 %patch0 -p1 -b .permissions
+%patch1 -p1 -b .CVE-2011-1097
 
 %build
 rm -fr autom4te.cache
@@ -77,6 +79,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man5/rsyncd.conf.5*
 
 %changelog
+* Tue Mar 15 2011 Vojtech Vitek <vvitek@redhat.com> - 3.0.6-5.1
+- Add upstream patch to fix CVE-2011-1097 - Incremental file-list
+  corruption due to temporary file_extra_cnt increments
+  Resolves: #684932
+
 * Tue Jun 22 2010 Jan Zeleny <jzeleny@redhat.com> - 3.0.6-5
 - added -fno-strict-aliasing to CFLAGS
 
